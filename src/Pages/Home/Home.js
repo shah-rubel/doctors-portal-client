@@ -1,6 +1,8 @@
 import React from 'react';
+import Footer from '../Shared/Footer';
 import Appoinment from './Appoinment';
 import Banner from './Banner';
+import ContactUs from './ContactUs';
 
 import InfoContainer from './InfoContainer';
 import ServicesContainer from './ServicesContainer';
@@ -17,6 +19,8 @@ const Home = () => {
             <ServicesContainer></ServicesContainer>
             <Appoinment></Appoinment>
             <Testimonial></Testimonial>
+            <ContactUs></ContactUs>
+            <Footer></Footer>
         </div>
     );
 };
