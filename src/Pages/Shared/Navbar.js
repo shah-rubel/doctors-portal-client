@@ -22,12 +22,13 @@ const Navbar = () => {
                             </ul>
                         </li> */}
                         <li><Link to='/about'>About</Link></li>
+                        <li><Link to='/appoinment'>Appoinment</Link></li>
                         <li><Link to='/reviews'>Reviews</Link></li>
                         <li><Link to='/contact'>Contact us</Link></li>
                         <li><Link to='/login'>Login</Link></li>
                     </ul>
                 </div>
-                <a className="btn btn-ghost normal-case text-xl">Doctors Portal</a>
+                < Link to='/home' className="btn btn-link text-black hover:no-underline normal-case text-xl">Doctors Portal</Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal p-0">
@@ -44,6 +45,7 @@ const Navbar = () => {
                     </li> */}
 
                     <li><Link to='/about'>About</Link></li>
+                    <li><Link to='/appoinment'>Appoinment</Link></li>
                     <li><Link to='/reviews'>Reviews</Link></li>
                     <li><Link to='/contact'>Contact us</Link></li>
                     <li><Link to='/login'>Login</Link></li>
