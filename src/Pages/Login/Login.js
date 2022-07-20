@@ -1,13 +1,35 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import {useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.config';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useForm } from "react-hook-form";
+import Loading from '../Shared/Loading';
 
 const Login = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
-    const onSubmit = (data) => console.log(data);
+   
+    const [sendPasswordResetEmail, sending, resetError] = useSendPasswordResetEmail(
+        auth
+    );
+    const handleResetPassword = async () => {
+        const email = getValues('email');
+        if(email){
+            await sendPasswordResetEmail(email);
+            alert('Sent email');
+        }
+        else{
+            alert('Pleas enter valid email.');
+        }
+        
+    }
+    const { register, formState: { errors }, handleSubmit, reset,getValues } = useForm();
+    const location = useLocation();
+    let from = location.state?.from?.pathname || "/";
+    const onSubmit = (data) => {
+        signInWithEmailAndPassword(data.email, data.password);
+        reset();
+    }
     const navigate = useNavigate();
     const handleRegisterBtn = () => {
         navigate('/register');
@@ -28,16 +50,23 @@ const Login = () => {
     const handleGoogleSignin = () => {
         signInWithGoogle();
     }
-    const handleEmailPasswordSignin = event => {
-        event.preventDefault();
-        const email = event.target.email.value;
-        const password = event.target.password.value;
-        signInWithEmailAndPassword(email, password)
-        console.log(email, password);
-        event.target.reset();
+    // const handleEmailPasswordSignin = event => {
+    //     event.preventDefault();
+    //     const email = event.target.email.value;
+    //     const password = event.target.password.value;
+
+    //     console.log(email, password);
+    //     event.target.reset();
+    // }
+    if (loading || loading1 || sending) {
+        return <Loading></Loading>
+    }
+    let signInError;
+    if (error || error1 || resetError) {
+        signInError = <p className='text-red-500 mb-2'><small>{error?.message || error1?.message || resetError?.message}</small></p>
     }
     if (user || user1) {
-        console.log(user);
+        navigate(from, { replace: true });
     }
     return (
         <div class="card w-96 bg-base-100 shadow-xl mx-auto">
@@ -81,24 +110,25 @@ const Login = () => {
                                     message: 'Please type Password.'
                                 },
                                 pattern: {
-                                    value: /^[A-Za-z]+$/,
-                                    message: 'Please provide valid password'
+                                    value: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                                    message: 'Password min 8 letter password, with at least a symbol, upper and lower case letters and a number.'
                                 }
                             })}
                         />
+                        <span><button onClick={handleResetPassword} className='text-secondary' >Forgot password?</button></span>
                         <label class="label">
                             {errors.password?.type === 'required' && <span class="label-text-alt text-red-500">{errors.password.message}</span>}
                             {errors.password?.type === 'pattern' && <span class="label-text-alt text-red-500">{errors.password.message}</span>}
                         </label>
                     </div>
+                    {signInError}
 
-
-                    <input className='w-full max-w-xs btn' value="Login" type="submit" />
+                    <input className='w-full max-w-xs btn text-white' value="Login" type="submit" />
                 </form>
 
 
 
-                <p className='my-2'>New to doctors portal? <span><button onClick={handleRegisterBtn} className='text-secondary' >Create new account.</button></span> </p>
+                <p className='my-2 text-center'><small>New to doctors portal? <span><button onClick={handleRegisterBtn} className='text-secondary' >Create new account.</button></span></small> </p>
                 <div class="flex flex-col w-full border-opacity-50">
 
                     <div class="divider">OR</div>

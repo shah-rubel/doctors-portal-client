@@ -1,7 +1,24 @@
 import React from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {signOut} from 'firebase/auth';
 import { Link } from 'react-router-dom';
+import auth from '../../firebase.config';
+import Loading from './Loading';
 
 const Navbar = () => {
+    const [user, loading, error] = useAuthState(auth);
+    if(loading){
+        return <Loading></Loading>
+    }
+    let userError;
+    if(error){
+        userError=<p className='text-red-500'>{error?.message}</p>
+        alert({userError});
+    }
+    const logout = () => {
+        signOut(auth);
+      };
+      
     return (
         <div style={{marginLeft:"15%",marginBottom:"5%"}} className="navbar bg-base-100">
             <div className="navbar-start">
@@ -25,7 +42,7 @@ const Navbar = () => {
                         <li><Link to='/appoinment'>Appoinment</Link></li>
                         <li><Link to='/reviews'>Reviews</Link></li>
                         <li><Link to='/contact'>Contact us</Link></li>
-                        <li><Link to='/login'>Login</Link></li>
+                        <li>{user ? <button onClick={logout} class="btn btn-ghost">Sign Out</button>:<Link to='/login'>Login</Link>}</li>
                     </ul>
                 </div>
                 < Link to='/home' className="btn btn-link text-black hover:no-underline normal-case text-xl">Doctors Portal</Link>
@@ -48,7 +65,7 @@ const Navbar = () => {
                     <li><Link to='/appoinment'>Appoinment</Link></li>
                     <li><Link to='/reviews'>Reviews</Link></li>
                     <li><Link to='/contact'>Contact us</Link></li>
-                    <li><Link to='/login'>Login</Link></li>
+                    <li>{user ? <button onClick={logout} class="btn btn-ghost">Sign Out</button>:<Link to='/login'>Login</Link>}</li>
                 </ul>
             </div>
             {/* <div className="navbar-end">
